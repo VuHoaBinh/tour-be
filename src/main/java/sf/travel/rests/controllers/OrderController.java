@@ -34,7 +34,6 @@ public class OrderController {
         response.setTotal(pageResult.getTotalElements());
         response.setSize(pageResult.getSize());
         response.setPage(pageResult.getNumber());
-
         return response;
     }
 

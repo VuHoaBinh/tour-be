@@ -7,4 +7,5 @@ import sf.travel.entities.Order;
 import sf.travel.entities.Travel;
 
 public interface OrderRepository extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order> {
+
 }

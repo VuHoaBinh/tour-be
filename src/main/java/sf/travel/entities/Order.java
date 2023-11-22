@@ -7,6 +7,7 @@ import sf.travel.enums.Status;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -25,6 +26,13 @@ public class Order {
 
     @Column
     private String name;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    // CascadeType.ALL: thay đổi trong đối tượng cha , tự động lan truyền xuống các đối tượng con
+    // orphanRemoval = true : delete an/many element from child & parent
+    //fetch = FetchType.LAZY : decrease data without it necessary
+    @JoinColumn()
+    private List<FileImage> fileImages = new ArrayList<>();
 
     @Column
     private String description;

@@ -8,10 +8,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
-import sf.travel.entities.Customer;
-import sf.travel.entities.Order;
-import sf.travel.entities.Promotion;
-import sf.travel.entities.Travel;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+import sf.travel.entities.*;
 import sf.travel.errors.ConflictError;
 import sf.travel.errors.ErrorCode;
 import sf.travel.helper.specifications.OrderSpec;
@@ -20,9 +19,14 @@ import sf.travel.repositories.OrderRepository;
 import sf.travel.repositories.TravelRepository;
 import sf.travel.rests.types.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+// import lib thumbnail for img
+import net.coobird.thumbnailator.Thumbnails;
 @Service
 @AllArgsConstructor
 public class OrderService {
@@ -35,8 +39,26 @@ public class OrderService {
         Optional<Travel> travel = travelRepo.findById(input.getTravelId());
         Optional<Customer> customer = customerRepo.findById(input.getCustomerId());
 
+
+        List<MultipartFile> imageFiles = ((MultipartHttpServletRequest) input).getFiles("imageFiles");
+
         Order order = new Order();
         order.setName(input.getName());
+        List<FileImage> imageFileList = new ArrayList<>();
+        for(MultipartFile file : imageFiles) {
+            try{
+                byte[] resizedImageBytes = Thumbnails.of(file.getInputStream())
+                        .size(372, 372)
+                        .outputFormat("jpg")
+                        .outputQuality(0.5)
+                        .asByteArray();
+                FileImage imageFile = new FileImage();
+                imageFile.setImageByte(resizedImageBytes);
+                imageFileList.add(imageFile);
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         order.setDescription(input.getDescription());
         order.setPrice(input.getPrice());
         order.setStatus(input.getStatus());

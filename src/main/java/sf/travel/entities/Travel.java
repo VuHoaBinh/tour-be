@@ -26,6 +26,7 @@ public class Travel {
     @Column
     private String detail;
 
+    // define special column
     @Enumerated(EnumType.STRING)
     @Column
     private TravelType type;
